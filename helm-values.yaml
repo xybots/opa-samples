@@ -1,0 +1,51 @@
+imageTag: 0.23.2
+
+opa: false
+
+mgmt:
+  # imageTag: 0.11
+  configmapPolicies:
+    enabled: true
+    namespaces: [opa]
+  replicate:
+    cluster:
+      - v1/namespaces
+    namespace:
+      - v1/pods
+
+rbac:
+  rules:
+    cluster:
+      - apiGroups:
+          - "*"
+        resources:
+          - configmaps
+        verbs:
+          - get
+          - list
+          - watch
+          - patch
+          - update
+      - apiGroups:
+          - "*"
+        resources:
+          - pods
+          - namespaces
+        verbs:
+          - get
+          - list
+          - watch
+
+# admissionControllerFailurePolicy: Fail
+
+admissionControllerRules:
+  - operations: ["CREATE", "UPDATE"]
+    apiGroups: ["*"]
+    apiVersions: ["*"]
+    resources: ["pods"]
+
+extraArgs:
+  - "--set=decision_logs.console=true"
+
+authz:
+  enabled: false
